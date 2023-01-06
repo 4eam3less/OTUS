@@ -13,4 +13,6 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
-add_subdirectory(helloworld)
+if(SOLUTION STREQUAL "homework1")
+    add_subdirectory(helloworld)
+endif()
