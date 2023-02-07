@@ -10,7 +10,7 @@ add_executable(helloworld main.cpp)
 
 target_include_directories(helloworld PRIVATE "${CMAKE_BINARY_DIR}/helloworld")
 
-add_subdirectory(test)
+add_subdirectory(test EXCLUDE_FROM_ALL)
 
 install(TARGETS helloworld RUNTIME DESTINATION bin)
 
