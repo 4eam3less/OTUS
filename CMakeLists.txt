@@ -1,9 +1,17 @@
 cmake_minimum_required(VERSION 3.10)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project(global CXX)
+
+if(MSVC)
+    add_compile_options(/W4
+    )
+else()
+    add_compile_options(-Wall -Wextra -pedantic -Werror
+    )
+endif()
 
 include(FetchContent)
 FetchContent_Declare(
@@ -13,6 +21,12 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
-if(SOLUTION STREQUAL "homework1")
-    add_subdirectory(helloworld)
+if(DEFINED SOLUTION)
+    if(SOLUTION STREQUAL "homework1")
+        add_subdirectory(helloworld)
+    elseif(SOLUTION STREQUAL "homework2")
+        add_subdirectory(helloworld)
+    endif()
 endif()
+
+add_subdirectory(ip-filter)

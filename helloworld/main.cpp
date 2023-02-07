@@ -1,4 +1,4 @@
-#include "project_version.h"
+#include "project-version.h"
 #include <iostream>
 
 int main(){

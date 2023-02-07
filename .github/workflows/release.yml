@@ -7,7 +7,7 @@ on:
       - feature/github_actions
 
 jobs:
-  build:
+  build-homework1:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -15,7 +15,7 @@ jobs:
           submodules: true
       - run: cmake . -DPATCH_VERSION=${{ github.run_number }} -DSOLUTION=homework1
       - run: cmake --build .
-      - run: cmake --build . --target test_version
+      - run: cmake --build . --target test-version
       - run: cmake --build . --target package
       - name: Create Release
         id: create_release
@@ -37,3 +37,14 @@ jobs:
           asset_path: ./helloworld-0.0.${{ github.run_number }}-Linux.deb
           asset_name: helloworld-0.0.${{ github.run_number }}-Linux.deb
           asset_content_type: application/vnd.debian.binary-package
+          
+          
+  build-homework2:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - run: cmake . -DSOLUTION=homework2
+      - run: cmake --build .
+      - run: cmake --build . --target test-ip
