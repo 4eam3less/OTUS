@@ -30,18 +30,13 @@ inline std::vector<uint8_t> convert_ip_to_vector(const std::string &str){
     return result;
 }
 
-inline void  print_ip(const std::vector<uint8_t> &ip){
+inline std::ostream& operator << (std::ostream &os, const std::vector<uint8_t> &ip){
     for(auto it = ip.cbegin(); it != ip.cend(); ++it){
         if (it != ip.cbegin())
-            std::cout << ".";
-        std::cout << static_cast<int>(*it);
+            os << ".";
+        os << static_cast<int>(*it);
     }
-    std::cout << std::endl;
+    os << std::endl;
+    return os;
 }
 
-template <class Filter, class Handler>
-inline void ip_filter(const std::vector<std::vector<uint8_t>> & ip_pool, Filter &&filter, Handler &&handler){
-    for(auto &it : ip_pool)
-        if(filter(it))
-            handler(it);
-}

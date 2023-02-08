@@ -31,14 +31,3 @@ TEST(ip, correct_ip){
    }
 }
 
-TEST(ip, ip_filtration){
-
-    std::vector<std::vector<uint8_t>> ip_pool = {{10,112,41,38}, {110,137,120,150}, {10,147,245,10}};
-    std::vector<std::vector<uint8_t>> sample = {{10,112,41,38}, {10,147,245,10}};
-    std::vector<std::vector<uint8_t>> result;
-
-    ip_filter(ip_pool, [](const std::vector<uint8_t> &ip){ return (ip[0] == 10) ? true : false; },
-    [&result](const std::vector<uint8_t> &ip ){ result.push_back(ip);});
-
-    ASSERT_TRUE(result == sample);
-}

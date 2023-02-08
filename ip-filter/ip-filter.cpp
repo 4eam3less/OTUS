@@ -17,18 +17,13 @@ int main(){
         }
 
         std::sort(ip_pool.begin(), ip_pool.end(), std::greater<std::vector<uint8_t>>());
-        std::for_each(ip_pool.cbegin(), ip_pool.cend(), print_ip);
-
-        ip_filter(ip_pool, [](const std::vector<uint8_t> &ip){ return (ip[0] == 1) ? true : false; }, print_ip);
-        ip_filter(ip_pool, [](const std::vector<uint8_t> &ip){ return (ip[0] == 46 && ip[1] == 70) ? true : false; }, print_ip);
-        ip_filter(ip_pool, [](const std::vector<uint8_t> &ip){
-            for(const auto &it : ip){
-                if(it == 46) return true;
-            } return false;},
-        print_ip);
+        std::for_each(ip_pool.cbegin(), ip_pool.cend(), [](const std::vector<uint8_t> &ip) {std::cout << ip; });
+        std::for_each(ip_pool.cbegin(), ip_pool.cend(), [](const std::vector<uint8_t> &ip){ if(ip[0] == 1) std::cout << ip; });
+        std::for_each(ip_pool.cbegin(), ip_pool.cend(), [](const std::vector<uint8_t> &ip){ if(ip[0] == 46 && ip[1] == 70) std::cout << ip; });
+        std::for_each(ip_pool.cbegin(), ip_pool.cend(), [](const std::vector<uint8_t> &ip){ for(const auto &it : ip){ if(it == 46) { std::cout << ip; return; }}});
     }
     catch(const std::exception &e){
         std::cerr << e.what() << std::endl;
-    }    
+    }
     return 0;
 }
