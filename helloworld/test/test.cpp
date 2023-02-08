@@ -1,4 +1,4 @@
-#include "../project-version.h"
+#include "../project-version.hpp"
 #include <gtest/gtest.h>
 
 TEST(version, check_version){
