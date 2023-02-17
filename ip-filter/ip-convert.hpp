@@ -13,6 +13,7 @@ inline std::vector<uint8_t> convert_ip_to_vector(const std::string &str){
     }
 
     std::vector<uint8_t> result;
+    result.reserve(4);
     std::string::size_type start = 0;
     std::string::size_type stop = str.find_first_of('.');
     constexpr int max_value_ip = 256;
