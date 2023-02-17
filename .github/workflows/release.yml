@@ -47,4 +47,4 @@ jobs:
           submodules: true
       - run: cmake . -DSOLUTION=homework2
       - run: cmake --build .
-      - run: cmake --build . --target test-ip
+      - run: cmake --build . --test-ip-convert

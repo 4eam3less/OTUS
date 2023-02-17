@@ -1,18 +1,19 @@
 set(PATCH_VERSION "1" CACHE INTERNAL "Patch version")
 set(PROJECT_VERSION 0.0.${PATCH_VERSION})
-set(PACKAGE_NAME "helloworld")
+set(TARGET_NAME hello-world)
+set(PACKAGE_NAME ${TARGET_NAME})
 
-project(helloworld VERSION ${PROJECT_VERSION})
+project(TARGET_NAME VERSION ${PROJECT_VERSION})
 
 configure_file(version.h.in version.h)
 
-add_executable(helloworld main.cpp)
+add_executable(${TARGET_NAME} main.cpp)
 
-target_include_directories(helloworld PRIVATE "${CMAKE_BINARY_DIR}/helloworld")
+target_include_directories(${TARGET_NAME} PRIVATE "${CMAKE_BINARY_DIR}/helloworld")
 
 add_subdirectory(test EXCLUDE_FROM_ALL)
 
-install(TARGETS helloworld RUNTIME DESTINATION bin)
+install(TARGETS ${TARGET_NAME} RUNTIME DESTINATION bin)
 
 set(CPACK_GENERATOR DEB)
 
