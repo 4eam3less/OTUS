@@ -19,7 +19,7 @@ jobs:
       
         uses: mattnotmitt/doxygen-action@v1.1.0
         with:
-          doxyfile-path: ./print-ip/doxyfile
+          doxyfile-path: print-ip/doxyfile
           working-directory: ./print-ip/
       
       # Deploy the HTML documentation to GitHub Pages
