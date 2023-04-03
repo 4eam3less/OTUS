@@ -31,9 +31,10 @@
 *.out
 *.app
 
-# QtCreator
+# IDE
 *.user
-
-
 /.idea/.gitignore
 /.idea/.name
+
+# gitignore
+.gitignore
