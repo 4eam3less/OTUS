@@ -12,11 +12,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-
-      # Build the HTML documentation
-      - name: Doxygen Action
       - run: pwd
       - run: ls 
+      # Build the HTML documentation
+      - name: Doxygen Action
+      
         uses: mattnotmitt/doxygen-action@v1.1.0
         with:
           doxyfile-path: ./print-ip/doxyfile
