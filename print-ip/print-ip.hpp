@@ -3,7 +3,9 @@
 #include <iostream>
 #include "additional_type_traits.hpp"
 
-
+/// test func
+/// \tparam Integer
+/// \param ip
 template<typename Integer,  std::enable_if_t<std::is_integral<Integer>::value, bool > = true >
 void print_ip(const Integer &ip){
     auto *start = reinterpret_cast<const unsigned char*> (&ip);
