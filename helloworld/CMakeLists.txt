@@ -3,6 +3,7 @@ set(PROJECT_VERSION 0.0.${PATCH_VERSION})
 set(TARGET_NAME hello-world)
 set(PACKAGE_NAME ${TARGET_NAME})
 
+
 project(TARGET_NAME VERSION ${PROJECT_VERSION})
 
 configure_file(version.h.in version.h)
