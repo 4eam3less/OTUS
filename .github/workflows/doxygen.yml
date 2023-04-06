@@ -12,8 +12,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - run: pwd
-      - run: ls 
       # Build the HTML documentation
       - name: Doxygen Action
       
