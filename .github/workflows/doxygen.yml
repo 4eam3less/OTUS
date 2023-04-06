@@ -1,12 +1,10 @@
 name: Documentation
 env:
   WORKDIR: "print-ip"
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
 on:
   push:
     branches:
-    - master
+    - main
     - feature/github_actions
 
 jobs:
@@ -35,4 +33,3 @@ jobs:
         allow_empty_commit: false
         force_orphan: true
         publish_branch: gh-pages
-        
