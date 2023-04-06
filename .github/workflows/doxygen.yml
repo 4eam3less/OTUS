@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - run: cd print-ip
+      - run: cd "print-ip"
       - run: pwd
       # Build the HTML documentation
       - name: Doxygen Action
