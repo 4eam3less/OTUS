@@ -3,12 +3,12 @@
 #include <iostream>
 #include "additional_type_traits.hpp"
 
-/// \mainpage   Print IP-address for C++
+/// \mainpage   Print an IP-address for C++
 ///
-/// \brief      Print IP-address from various data.
+/// \brief      Print an IP-address from various data.
 /// \author     Nameless
 /// \details
-/// Prints an IP address of various data types to the standard input output stream.\n
+/// This function prints an IP address of various data types to the standard input output stream.\n
 /// \n
 /// Exsample: \n
 /// \n
@@ -23,7 +23,7 @@
 ///
 
 
-/// \brief Prints an IP-address for integer type
+/// \brief Print an IP-address for integer type
 /// \tparam Integer integer type
 /// \param ip The integer type reference
 template<typename Integer, std::enable_if_t<std::is_integral<Integer>::value, bool> = true>
@@ -39,7 +39,7 @@ void print_ip(const Integer &ip) {
     std::cout << std::endl;
 }
 
-/// \brief Prints an IP-address for container
+/// \brief Print an IP-address for container
 /// \tparam Container container type
 /// \param ip The container type reference
 template<typename Container, std::enable_if_t<is_container<Container>::value, bool> = true>
@@ -52,7 +52,7 @@ void print_ip(const Container &ip) {
     std::cout << std::endl;
 }
 
-/// \brief Prints a raw std string
+/// \brief Print a raw std string
 /// \tparam String std string
 /// \param ip The string type reference
 template<typename String, std::enable_if_t<std::is_same_v<String, std::basic_string<char>>, bool> = true>
@@ -74,7 +74,7 @@ void print_elements(const TupleT &tp, const std::index_sequence<Is...>) {
     (print_element(std::get<Is>(tp)), ...);
 }
 
-/// \brief Prints an an IP-address for std::typle. \n std::typle types must be the same.
+/// \brief Print an IP-address for std::typle. \n std::typle types must be the same.
 /// \tparam Args args of the same type
 /// \param ip The std::typle
 template<typename ... Args, std::enable_if_t<is_one_type<Args...>::value, bool> = true>
