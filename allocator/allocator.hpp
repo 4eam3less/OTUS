@@ -1,58 +1,9 @@
 #pragma once
 
-#include <iostream>
-#include <map>
-
-class SimpleMemoryManager {
-public:
-
-    void create(size_t size) {
-        std::cout << __PRETTY_FUNCTION__ << std::endl;
-        data_ = std::malloc(size);
-        if (!data_)
-            throw std::bad_alloc();
-        pointer_ = data_;
-        size_ = size;
-    }
-
-    void clear() {
-        std::cout << __PRETTY_FUNCTION__ << std::endl;
-        std::free(data_);
-    }
-
-    void *get(size_t size) {
-        std::cout << __PRETTY_FUNCTION__ << std::endl;
-        // add check
-        void *tmp = pointer_;
-        map_.insert({tmp, true});
-        pointer_ = reinterpret_cast<char *>(pointer_) + size;
-        return tmp;
-    }
-
-    void destroy(void *ptr) {
-        std::cout << __PRETTY_FUNCTION__ << std::endl;
-        if (auto res = map_.find(ptr); res != map_.end())
-            if (res->second) {
-                res->second = false;
-                return;
-            }
-        throw std::runtime_error("not allocate");
-    }
-
-    bool state() {
-        return data_;
-    }
-
-private:
-
-    void *data_ = nullptr;
-    void *pointer_ = nullptr;
-    size_t size_ = 0;
-    std::map<void *, bool> map_;
-};
+#include "simple-memory-manager.hpp"
 
 template<typename T, size_t ReserveSize>
-class MyAllocator {
+class ReserveAllocator {
 public:
     using value_type = T;
 
@@ -71,7 +22,7 @@ public:
 
     template<typename U>
     struct rebind {
-        using other = MyAllocator<U, ReserveSize>;
+        using other = ReserveAllocator<U, ReserveSize>;
     };
 
     template<typename U, typename... Args>
