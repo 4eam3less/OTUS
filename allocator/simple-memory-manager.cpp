@@ -20,9 +20,16 @@ void SimpleMemoryManager::clear() {
 
 void *SimpleMemoryManager::get(size_t size) {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
-    // add check
-    if (!size)
+    if (!state())
+        throw std::runtime_error("SimpleMemoryManager has not been initialized");
+    if (size <= 0)
         return nullptr;
+
+    size_t memory_used = reinterpret_cast<char *>(pointer_) - reinterpret_cast<char *>(data_);
+    size_t ost = size_ - memory_used;
+    if (size > ost) {
+
+    }
 
     void *tmp = pointer_;
     map_.emplace_back(tmp, true);
@@ -44,6 +51,8 @@ void SimpleMemoryManager::destroy(void *ptr) {
                 } else {
                     res->second = false;
                 }
+            } else {
+                res->second = false;
             }
             return;
         }

@@ -12,7 +12,8 @@ int main() {
     mm.destroy(b1);
     mm.destroy(d8);
     mm.destroy(c4);
-
+    mm.destroy(e2);
+    mm.destroy(a4);
 //
 //    std::map<int, int> a;
 //    a.insert({1, 10});
