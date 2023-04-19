@@ -1,5 +1,4 @@
 #include "simple-memory-manager.hpp"
-#include <ranges>
 
 template<class Iterator>
 Iterator find_by_key(const Iterator &begin, const Iterator &end, void *ptr);
@@ -32,26 +31,29 @@ void *SimpleMemoryManager::get(size_t size) {
     size_t memory_used = reinterpret_cast<char *>(pointer_) - reinterpret_cast<char *>(current_chunk_);
     size_t ost = size_ - memory_used;
     if (size > ost) {
+        auto res = try_reuse_memory(size);
+        if (res != nullptr)
+            return res;
         create(size_);
     }
-
     void *tmp = pointer_;
-    map_.emplace_back(tmp, true);
+    map_.back().emplace_back(tmp, true);
     pointer_ = reinterpret_cast<char *>(pointer_) + size;
     return tmp;
 }
 
 void SimpleMemoryManager::destroy(void *ptr) {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
-    if (auto res = find_by_key(map_.begin(), map_.end(), ptr); res != map_.end())
+    size_t chunk = find_chunk(ptr);
+    if (auto res = find_by_key(map_[chunk].begin(), map_[chunk].end(), ptr); res != map_[chunk].end())
         if (res->second) {
             auto next = std::next(res);
-            if (next != map_.end() && !next->second)
-                map_.erase(next);
-            if (res != map_.begin()) {
+            if (next != map_[chunk].end() && !next->second)
+                map_[chunk].erase(next);
+            if (res != map_[chunk].begin()) {
                 auto prev = std::prev(res);
                 if (!prev->second) {
-                    map_.erase(res);
+                    map_[chunk].erase(res);
                 } else {
                     res->second = false;
                 }
@@ -64,24 +66,31 @@ void SimpleMemoryManager::destroy(void *ptr) {
 }
 
 size_t SimpleMemoryManager::find_chunk(void *ptr) {
-    for (size_t i = 0; i < master_data_.size(); ++i) {
+    for (size_t i = 0; i < master_data_.size(); ++i)
         if (reinterpret_cast<char *>(ptr) >= reinterpret_cast<char *>(master_data_[i]) &&
             reinterpret_cast<char *>(ptr) < reinterpret_cast<char *>(master_data_[i + 1])) {
             return i;
         }
-    }
-    return -1;
+    throw std::runtime_error("not found");
 }
 
-bool SimpleMemoryManager::try_reuse_memory(size_t) {
+void *SimpleMemoryManager::try_reuse_memory(size_t size) {
 
-    for (auto it = map_.begin(); it != map_.end(); ++it) {
-        if (it->second)
-            continue;
-        //auto next = std::next(it);
-        //auto free_size = reinterpret_cast<char *>(it->first); //- *it;
-    }
-    return false;
+    for (auto chunk = map_.begin(); chunk != map_.end(); ++chunk)
+        for (auto it = chunk->begin(); it != chunk->end(); ++it) {
+            if (it->second)
+                continue;
+
+            auto next = std::next(it);
+            size_t free_size = next != chunk->end() ?
+                               reinterpret_cast<char *>(next->first) - reinterpret_cast<char *>(it->first) :
+                               reinterpret_cast<char *>(chunk->begin()->first) - reinterpret_cast<char *>(it->first);
+            if (free_size >= size) {
+                it->second = true;
+                return it->first;
+            }
+        }
+    return nullptr;
 }
 
 template<class Iterator>
