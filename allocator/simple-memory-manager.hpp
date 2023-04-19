@@ -14,14 +14,18 @@ public:
     void destroy(void *ptr);
 
     bool state() {
-        return data_;
+        return current_chunk_;
     }
 
 private:
 
-    void *data_ = nullptr;
+    size_t find_chunk(void *ptr);
+
+    bool try_reuse_memory(size_t size);
+
+    void *current_chunk_ = nullptr;
     void *pointer_ = nullptr;
-    //void *pointer_find_ = nullptr;
     size_t size_ = 0;
     std::vector<std::pair<void *, bool>> map_;
+    std::vector<void *> master_data_;
 };

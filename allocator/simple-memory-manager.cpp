@@ -1,34 +1,38 @@
 #include "simple-memory-manager.hpp"
+#include <ranges>
 
 template<class Iterator>
 Iterator find_by_key(const Iterator &begin, const Iterator &end, void *ptr);
 
-
-void SimpleMemoryManager::create(size_t size) {
+void SimpleMemoryManager::create(size_t chunk_size) {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
-    data_ = std::malloc(size);
-    if (!data_)
+    current_chunk_ = std::malloc(chunk_size);
+    if (!current_chunk_)
         throw std::bad_alloc();
-    pointer_ = data_;
-    size_ = size;
+    master_data_.push_back(current_chunk_);
+    pointer_ = current_chunk_;
+    size_ = chunk_size;
 }
 
 void SimpleMemoryManager::clear() {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
-    std::free(data_);
+    std::for_each(master_data_.begin(), master_data_.end(), [](auto ptr) { free(ptr); });
+    master_data_.clear();
 }
 
 void *SimpleMemoryManager::get(size_t size) {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
     if (!state())
         throw std::runtime_error("SimpleMemoryManager has not been initialized");
+    if (size > size_)
+        throw std::runtime_error("an attempt to allocate an amount of memory that exceeds the size of the chunk");
     if (size <= 0)
         return nullptr;
 
-    size_t memory_used = reinterpret_cast<char *>(pointer_) - reinterpret_cast<char *>(data_);
+    size_t memory_used = reinterpret_cast<char *>(pointer_) - reinterpret_cast<char *>(current_chunk_);
     size_t ost = size_ - memory_used;
     if (size > ost) {
-
+        create(size_);
     }
 
     void *tmp = pointer_;
@@ -57,6 +61,27 @@ void SimpleMemoryManager::destroy(void *ptr) {
             return;
         }
     throw std::runtime_error("not allocate");
+}
+
+size_t SimpleMemoryManager::find_chunk(void *ptr) {
+    for (size_t i = 0; i < master_data_.size(); ++i) {
+        if (reinterpret_cast<char *>(ptr) >= reinterpret_cast<char *>(master_data_[i]) &&
+            reinterpret_cast<char *>(ptr) < reinterpret_cast<char *>(master_data_[i + 1])) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+bool SimpleMemoryManager::try_reuse_memory(size_t) {
+
+    for (auto it = map_.begin(); it != map_.end(); ++it) {
+        if (it->second)
+            continue;
+        //auto next = std::next(it);
+        //auto free_size = reinterpret_cast<char *>(it->first); //- *it;
+    }
+    return false;
 }
 
 template<class Iterator>
