@@ -9,6 +9,7 @@ void SimpleMemoryManager::create(size_t chunk_size) {
     if (!current_chunk_)
         throw std::bad_alloc();
     master_data_.push_back(current_chunk_);
+    map_.push_back({});
     pointer_ = current_chunk_;
     size_ = chunk_size;
 }
@@ -68,14 +69,13 @@ void SimpleMemoryManager::destroy(void *ptr) {
 size_t SimpleMemoryManager::find_chunk(void *ptr) {
     for (size_t i = 0; i < master_data_.size(); ++i)
         if (reinterpret_cast<char *>(ptr) >= reinterpret_cast<char *>(master_data_[i]) &&
-            reinterpret_cast<char *>(ptr) < reinterpret_cast<char *>(master_data_[i + 1])) {
+            reinterpret_cast<char *>(ptr) < (reinterpret_cast<char *>(master_data_[i]) + size_)) {
             return i;
         }
     throw std::runtime_error("not found");
 }
 
 void *SimpleMemoryManager::try_reuse_memory(size_t size) {
-
     for (auto chunk = map_.begin(); chunk != map_.end(); ++chunk)
         for (auto it = chunk->begin(); it != chunk->end(); ++it) {
             if (it->second)
