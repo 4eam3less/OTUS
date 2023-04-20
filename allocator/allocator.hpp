@@ -11,13 +11,12 @@ public:
         std::cout << __PRETTY_FUNCTION__ << std::endl;
         if (!memory_manager_.state())
             memory_manager_.create(ReserveSize * sizeof(T));
-        auto res = reinterpret_cast<T *>(memory_manager_.get(n * sizeof(T)));
-        return res;
+        return reinterpret_cast<T *>(memory_manager_.get(n * sizeof(T)));
     }
 
-    void deallocate(T *, size_t) {
+    void deallocate(T *p, size_t) {
         std::cout << __PRETTY_FUNCTION__ << std::endl;
-        //memory_manager_.clear();
+        memory_manager_.destroy(p);
     }
 
     template<typename U>

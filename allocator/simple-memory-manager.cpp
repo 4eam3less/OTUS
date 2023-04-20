@@ -5,19 +5,19 @@ Iterator find_by_key(const Iterator &begin, const Iterator &end, void *ptr);
 
 void SimpleMemoryManager::create(size_t chunk_size) {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
-    current_chunk_ = std::malloc(chunk_size);
-    if (!current_chunk_)
+    void *new_chunk_ = std::malloc(chunk_size);
+    if (!new_chunk_)
         throw std::bad_alloc();
-    master_data_.push_back(current_chunk_);
-    map_.push_back({});
-    pointer_ = current_chunk_;
+    data_.push_back(new_chunk_);
+    map_.emplace_back();
+    pointer_ = new_chunk_;
     size_ = chunk_size;
 }
 
 void SimpleMemoryManager::clear() {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
-    std::for_each(master_data_.begin(), master_data_.end(), [](auto ptr) { free(ptr); });
-    master_data_.clear();
+    std::for_each(data_.begin(), data_.end(), [](auto ptr) { free(ptr); });
+    data_.clear();
 }
 
 void *SimpleMemoryManager::get(size_t size) {
@@ -29,7 +29,7 @@ void *SimpleMemoryManager::get(size_t size) {
     if (size <= 0)
         return nullptr;
 
-    size_t memory_used = reinterpret_cast<char *>(pointer_) - reinterpret_cast<char *>(current_chunk_);
+    size_t memory_used = reinterpret_cast<char *>(pointer_) - reinterpret_cast<char *>(data_.back());
     size_t ost = size_ - memory_used;
     if (size > ost) {
         auto res = try_reuse_memory(size);
@@ -55,21 +55,23 @@ void SimpleMemoryManager::destroy(void *ptr) {
                 auto prev = std::prev(res);
                 if (!prev->second) {
                     map_[chunk].erase(res);
-                } else {
-                    res->second = false;
+                    return;
                 }
-            } else {
-                res->second = false;
             }
+            res->second = false;
             return;
         }
     throw std::runtime_error("not allocate");
 }
 
+bool SimpleMemoryManager::state() {
+    return !data_.empty();
+}
+
 size_t SimpleMemoryManager::find_chunk(void *ptr) {
-    for (size_t i = 0; i < master_data_.size(); ++i)
-        if (reinterpret_cast<char *>(ptr) >= reinterpret_cast<char *>(master_data_[i]) &&
-            reinterpret_cast<char *>(ptr) < (reinterpret_cast<char *>(master_data_[i]) + size_)) {
+    for (size_t i = 0; i < data_.size(); ++i)
+        if (reinterpret_cast<char *>(ptr) >= reinterpret_cast<char *>(data_[i]) &&
+            reinterpret_cast<char *>(ptr) < (reinterpret_cast<char *>(data_[i]) + size_)) {
             return i;
         }
     throw std::runtime_error("not found");

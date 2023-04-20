@@ -13,8 +13,11 @@ public:
 
     void destroy(void *ptr);
 
-    bool state() {
-        return current_chunk_;
+    bool state();
+
+    ~SimpleMemoryManager() {
+        if (!data_.empty())
+            clear();
     }
 
 private:
@@ -23,9 +26,8 @@ private:
 
     void *try_reuse_memory(size_t size);
 
-    void *current_chunk_ = nullptr;
     void *pointer_ = nullptr;
     size_t size_ = 0;
     std::vector<std::vector<std::pair<void *, bool>>> map_;
-    std::vector<void *> master_data_;
+    std::vector<void *> data_;
 };
