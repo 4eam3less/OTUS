@@ -1,5 +1,6 @@
 #include "allocator.hpp"
 #include <map>
+#include <algorithm>
 
 size_t factorial(unsigned int n) {
     return (n == 1 || n == 0) ? 1 : factorial(n - 1) * n;

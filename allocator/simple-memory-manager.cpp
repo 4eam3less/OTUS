@@ -1,6 +1,5 @@
 #include "simple-memory-manager.hpp"
-
-#define info
+#include <algorithm>
 
 template<class Iterator>
 Iterator find_by_key(const Iterator &begin, const Iterator &end, void *ptr);
