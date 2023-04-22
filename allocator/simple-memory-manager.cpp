@@ -1,32 +1,38 @@
 #include "simple-memory-manager.hpp"
 
+#define info
+
 template<class Iterator>
 Iterator find_by_key(const Iterator &begin, const Iterator &end, void *ptr);
 
-void SimpleMemoryManager::create(size_t chunk_size) {
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
-    void *new_chunk_ = std::malloc(chunk_size);
-    if (!new_chunk_)
-        throw std::bad_alloc();
-    data_.push_back(new_chunk_);
-    map_.emplace_back();
-    pointer_ = new_chunk_;
-    size_ = chunk_size;
+
+SimpleMemoryManager::SimpleMemoryManager(size_t size) {
+    create(size);
+}
+
+SimpleMemoryManager::~SimpleMemoryManager() {
+    if (!data_.empty())
+        clear();
+}
+
+void SimpleMemoryManager::create(size_t size) {
+    if (state())
+        throw std::runtime_error("SimpleMemoryManager is already initialized");
+    new_chunk(size);
 }
 
 void SimpleMemoryManager::clear() {
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     std::for_each(data_.begin(), data_.end(), [](auto ptr) { free(ptr); });
     data_.clear();
 }
 
 void *SimpleMemoryManager::get(size_t size) {
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
     if (!state())
         throw std::runtime_error("SimpleMemoryManager has not been initialized");
     if (size > size_)
-        throw std::runtime_error("an attempt to allocate an amount of memory that exceeds the size of the chunk");
-    if (size <= 0)
+        throw std::runtime_error("the attempt to allocate an amount of memory that exceeds the size of the chunk");
+    if (size == 0)
         return nullptr;
 
     size_t memory_used = reinterpret_cast<char *>(pointer_) - reinterpret_cast<char *>(data_.back());
@@ -35,7 +41,7 @@ void *SimpleMemoryManager::get(size_t size) {
         auto res = try_reuse_memory(size);
         if (res != nullptr)
             return res;
-        create(size_);
+        new_chunk(size_);
     }
     void *tmp = pointer_;
     map_.back().emplace_back(tmp, true);
@@ -44,7 +50,7 @@ void *SimpleMemoryManager::get(size_t size) {
 }
 
 void SimpleMemoryManager::destroy(void *ptr) {
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     size_t chunk = find_chunk(ptr);
     if (auto res = find_by_key(map_[chunk].begin(), map_[chunk].end(), ptr); res != map_[chunk].end())
         if (res->second) {
@@ -66,6 +72,28 @@ void SimpleMemoryManager::destroy(void *ptr) {
 
 bool SimpleMemoryManager::state() {
     return !data_.empty();
+}
+
+#ifdef DEBUG_INFO
+#define ffgj() std::cout << __PRETTY_FUNCTION__ << std::endl;
+#endif
+
+#ifndef DEBUG_INFO
+#define ffgj()
+#endif
+
+void SimpleMemoryManager::new_chunk(size_t chunk_size) {
+//#ifdef DEBUG_INFO
+//    std::cout << __PRETTY_FUNCTION__ << std::endl;
+//#endif
+//    ffgj()
+    void *new_chunk_ = std::malloc(chunk_size);
+    if (!new_chunk_)
+        throw std::bad_alloc();
+    data_.push_back(new_chunk_);
+    map_.emplace_back();
+    pointer_ = new_chunk_;
+    size_ = chunk_size;
 }
 
 size_t SimpleMemoryManager::find_chunk(void *ptr) {

@@ -1,3 +1,10 @@
 set(TARGET_NAME allocator)
 
-add_executable(${TARGET_NAME} allocator.hpp simple-memory-manager.hpp simple-memory-manager.cpp main.cpp)
+set(HEADERS allocator.hpp
+        simple-memory-manager.hpp
+        container.hpp)
+
+set(SOURCES main.cpp
+        simple-memory-manager.cpp)
+
+add_executable(${TARGET_NAME} ${HEADERS} ${SOURCES})

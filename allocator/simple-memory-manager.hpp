@@ -5,6 +5,17 @@
 
 class SimpleMemoryManager {
 public:
+
+    SimpleMemoryManager() = default;
+
+    SimpleMemoryManager(size_t size);
+
+    SimpleMemoryManager(SimpleMemoryManager &other) = delete;
+
+    SimpleMemoryManager(SimpleMemoryManager &&other) = default;
+
+    ~SimpleMemoryManager();
+
     void create(size_t size);
 
     void clear();
@@ -15,12 +26,9 @@ public:
 
     bool state();
 
-    ~SimpleMemoryManager() {
-        if (!data_.empty())
-            clear();
-    }
-
 private:
+
+    void new_chunk(size_t chunk_size);
 
     size_t find_chunk(void *ptr);
 
