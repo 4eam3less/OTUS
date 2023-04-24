@@ -1,6 +1,5 @@
 #pragma once
 
-#include <iostream>
 #include <vector>
 
 class SimpleMemoryManager {
@@ -8,7 +7,7 @@ public:
 
     SimpleMemoryManager() = default;
 
-    SimpleMemoryManager(size_t size);
+    explicit SimpleMemoryManager(size_t size);
 
     SimpleMemoryManager(SimpleMemoryManager &other) = delete;
 

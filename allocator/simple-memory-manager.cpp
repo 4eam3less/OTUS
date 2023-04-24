@@ -1,4 +1,5 @@
 #include "simple-memory-manager.hpp"
+#include "pretty-function-info.hpp"
 #include <algorithm>
 
 template<class Iterator>
@@ -10,23 +11,26 @@ SimpleMemoryManager::SimpleMemoryManager(size_t size) {
 }
 
 SimpleMemoryManager::~SimpleMemoryManager() {
+    pretty_function_info()
     if (!data_.empty())
         clear();
 }
 
 void SimpleMemoryManager::create(size_t size) {
+    pretty_function_info()
     if (state())
         throw std::runtime_error("SimpleMemoryManager is already initialized");
     new_chunk(size);
 }
 
 void SimpleMemoryManager::clear() {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    pretty_function_info()
     std::for_each(data_.begin(), data_.end(), [](auto ptr) { free(ptr); });
     data_.clear();
 }
 
 void *SimpleMemoryManager::get(size_t size) {
+    pretty_function_info()
     if (!state())
         throw std::runtime_error("SimpleMemoryManager has not been initialized");
     if (size > size_)
@@ -49,7 +53,7 @@ void *SimpleMemoryManager::get(size_t size) {
 }
 
 void SimpleMemoryManager::destroy(void *ptr) {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    pretty_function_info()
     size_t chunk = find_chunk(ptr);
     if (auto res = find_by_key(map_[chunk].begin(), map_[chunk].end(), ptr); res != map_[chunk].end())
         if (res->second) {
@@ -66,26 +70,15 @@ void SimpleMemoryManager::destroy(void *ptr) {
             res->second = false;
             return;
         }
-    throw std::runtime_error("not allocate");
+    throw std::runtime_error("the attempt to free unallocated memory");
 }
 
 bool SimpleMemoryManager::state() {
     return !data_.empty();
 }
 
-#ifdef DEBUG_INFO
-#define ffgj() std::cout << __PRETTY_FUNCTION__ << std::endl;
-#endif
-
-#ifndef DEBUG_INFO
-#define ffgj()
-#endif
-
 void SimpleMemoryManager::new_chunk(size_t chunk_size) {
-//#ifdef DEBUG_INFO
-//    std::cout << __PRETTY_FUNCTION__ << std::endl;
-//#endif
-//    ffgj()
+    pretty_function_info()
     void *new_chunk_ = std::malloc(chunk_size);
     if (!new_chunk_)
         throw std::bad_alloc();
@@ -96,15 +89,17 @@ void SimpleMemoryManager::new_chunk(size_t chunk_size) {
 }
 
 size_t SimpleMemoryManager::find_chunk(void *ptr) {
+    pretty_function_info()
     for (size_t i = 0; i < data_.size(); ++i)
         if (reinterpret_cast<char *>(ptr) >= reinterpret_cast<char *>(data_[i]) &&
             reinterpret_cast<char *>(ptr) < (reinterpret_cast<char *>(data_[i]) + size_)) {
             return i;
         }
-    throw std::runtime_error("not found");
+    throw std::runtime_error("the attempt to free unallocated memory");
 }
 
 void *SimpleMemoryManager::try_reuse_memory(size_t size) {
+    pretty_function_info()
     for (auto chunk = map_.begin(); chunk != map_.end(); ++chunk)
         for (auto it = chunk->begin(); it != chunk->end(); ++it) {
             if (it->second)
