@@ -46,11 +46,6 @@ public:
     void f(T &value, Node<T> *ptr) {
         if (value > ptr->data) {
             if (!ptr->right) {
-//                ptr->right = new Node<T>(value);
-//                ptr->right->parent = ptr;
-//                ++size_;
-//                return;
-
                 auto p = allocator_.allocate(1);
                 allocator_.construct(p, value);
                 ptr->right = p;
@@ -61,12 +56,6 @@ public:
             ptr = ptr->right;
         } else if (value < ptr->data) {
             if (!ptr->left) {
-//                ptr->left = new Node<T>(value);
-//                ptr->left->parent = ptr;
-//                ++size_;
-//                return;
-
-                ////
                 auto p = allocator_.allocate(1);
                 allocator_.construct(p, value);
                 ptr->left = p;

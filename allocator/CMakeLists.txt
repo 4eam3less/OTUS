@@ -1,8 +1,9 @@
 set(TARGET_NAME allocator)
 
-set(HEADERS allocator.hpp
+set(HEADERS reserve-allocator.hpp
         simple-memory-manager.hpp
-        container.hpp)
+        pretty-function-info.hpp
+        binary-tree.hpp)
 
 set(SOURCES main.cpp
         simple-memory-manager.cpp)
