@@ -9,9 +9,9 @@ public:
 
     explicit SimpleMemoryManager(size_t size);
 
-    SimpleMemoryManager(SimpleMemoryManager &other) = delete;
+    SimpleMemoryManager(const SimpleMemoryManager &other) = delete;
 
-    SimpleMemoryManager(SimpleMemoryManager &&other) = default;
+    SimpleMemoryManager(const SimpleMemoryManager &&other) = delete;
 
     ~SimpleMemoryManager();
 

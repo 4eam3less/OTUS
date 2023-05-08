@@ -5,9 +5,7 @@
 
 template<typename U>
 struct Node {
-    explicit Node(const U &value) {
-        data = value;
-    }
+    explicit Node(const U &value) : data(value) {};
 
     Node(Node &other) = default;
 
@@ -24,6 +22,12 @@ class List {
         friend class List;
 
         explicit Iterator(U *begin) : pos_(begin) {}
+
+        Iterator(const Iterator<U> &other) = default;
+
+        Iterator(const Iterator<U> &&other) noexcept = default;
+
+        ~Iterator() = default;
 
         Iterator &operator++() {
             pos_ = pos_->next;

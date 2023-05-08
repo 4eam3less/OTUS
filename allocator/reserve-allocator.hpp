@@ -8,7 +8,15 @@ class ReserveAllocator {
 public:
     using value_type = T;
 
-    T *allocate(std::size_t n) {
+    ReserveAllocator() noexcept = default;
+
+    ReserveAllocator(const ReserveAllocator &other) = delete;
+
+    ReserveAllocator(const ReserveAllocator &&other) = delete;
+
+    ~ReserveAllocator() = default;
+
+    [[nodiscard]] T *allocate(std::size_t n) {
         pretty_function_info()
         if (!memory_manager_.state())
             memory_manager_.create(ReserveSize * sizeof(T));

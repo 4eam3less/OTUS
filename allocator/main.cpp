@@ -1,15 +1,19 @@
-#include "allocator.hpp"
+#include "reserve-allocator.hpp"
 #include <map>
-#include <algorithm>
+#include <iostream>
+#include "List.hpp"
 
 size_t factorial(unsigned int n) {
     return (n == 1 || n == 0) ? 1 : factorial(n - 1) * n;
 }
 
+template<typename T>
+void f(T) {}
+
 int main() {
 
     std::map<int, int> a;
-    std::map<int, int, std::less<>, ReserveAllocator<std::pair<const int, int>, 30>> b;
+    std::map<int, int, std::less<>, ReserveAllocator<std::pair<const int, int>, 10>> b;
 
     for (size_t i = 0; i < 10; ++i) {
         a.insert({i, factorial(i)});
