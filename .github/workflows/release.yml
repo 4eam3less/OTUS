@@ -37,8 +37,8 @@ jobs:
           asset_path: ./hello-world-0.0.${{ github.run_number }}-Linux.deb
           asset_name: hello-world-0.0.${{ github.run_number }}-Linux.deb
           asset_content_type: application/vnd.debian.binary-package
-          
-          
+
+
   build-homework2:
     runs-on: ubuntu-latest
     steps:
@@ -48,7 +48,16 @@ jobs:
       - run: cmake . -DSOLUTION=homework2
       - run: cmake --build .
       - run: cmake --build .  --target test-ip-convert
-      
+
+  build-homework3:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - run: cmake . -DSOLUTION=homework3
+      - run: cmake --build .
+
   build-homework4:
     runs-on: ubuntu-latest
     steps:
