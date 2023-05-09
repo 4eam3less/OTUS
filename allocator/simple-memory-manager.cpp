@@ -38,7 +38,7 @@ void *SimpleMemoryManager::get(size_t size) {
     if (size == 0)
         return nullptr;
 
-    size_t memory_used = reinterpret_cast<char *>(pointer_) - reinterpret_cast<char *>(data_.back());
+    size_t memory_used = reinterpret_cast<uint8_t *>(pointer_) - reinterpret_cast<uint8_t *>(data_.back());
     size_t ost = size_ - memory_used;
     if (size > ost) {
         auto res = try_reuse_memory(size);
@@ -48,7 +48,7 @@ void *SimpleMemoryManager::get(size_t size) {
     }
     void *tmp = pointer_;
     map_.back().emplace_back(tmp, true);
-    pointer_ = reinterpret_cast<char *>(pointer_) + size;
+    pointer_ = reinterpret_cast<uint8_t *>(pointer_) + size;
     return tmp;
 }
 
@@ -91,8 +91,8 @@ void SimpleMemoryManager::new_chunk(size_t chunk_size) {
 size_t SimpleMemoryManager::find_chunk(void *ptr) {
     pretty_function_info()
     for (size_t i = 0; i < data_.size(); ++i)
-        if (reinterpret_cast<char *>(ptr) >= reinterpret_cast<char *>(data_[i]) &&
-            reinterpret_cast<char *>(ptr) < (reinterpret_cast<char *>(data_[i]) + size_)) {
+        if (reinterpret_cast<uint8_t *>(ptr) >= reinterpret_cast<uint8_t *>(data_[i]) &&
+            reinterpret_cast<uint8_t *>(ptr) < (reinterpret_cast<uint8_t *>(data_[i]) + size_)) {
             return i;
         }
     throw std::runtime_error("the attempt to free unallocated memory");
@@ -107,8 +107,9 @@ void *SimpleMemoryManager::try_reuse_memory(size_t size) {
 
             auto next = std::next(it);
             size_t free_size = next != chunk->end() ?
-                               reinterpret_cast<char *>(next->first) - reinterpret_cast<char *>(it->first) :
-                               reinterpret_cast<char *>(chunk->begin()->first) - reinterpret_cast<char *>(it->first);
+                               reinterpret_cast<uint8_t *>(next->first) - reinterpret_cast<uint8_t *>(it->first) :
+                               reinterpret_cast<uint8_t *>(chunk->begin()->first) -
+                               reinterpret_cast<uint8_t *>(it->first);
             if (free_size >= size) {
                 it->second = true;
                 return it->first;

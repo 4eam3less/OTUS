@@ -7,9 +7,6 @@ size_t factorial(unsigned int n) {
     return (n == 1 || n == 0) ? 1 : factorial(n - 1) * n;
 }
 
-template<typename T>
-void f(T) {}
-
 int main() {
 
     std::map<int, int> a;
