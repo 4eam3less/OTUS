@@ -30,15 +30,14 @@
 /// \param ip The integer type reference
 template<typename Integer, std::enable_if_t<std::is_integral<Integer>::value, bool> = true>
 void print_ip(const Integer &ip) {
-    auto *start = reinterpret_cast<const unsigned char *> (&ip);
-    size_t size = sizeof(Integer);
-    start += size - 1;
-    for (const unsigned char *it = start; size > 0; --it, --size) {
-        if (it != start)
-            std::cout << ".";
-        std::cout << static_cast<int>(*it);
-    }
-    std::cout << std::endl;
+    auto bytes = reinterpret_cast<const unsigned char *>(&ip);
+    auto end = bytes + sizeof(Integer);
+    std::copy(
+            std::make_reverse_iterator(end),
+            std::make_reverse_iterator(bytes + 1),
+            std::ostream_iterator<unsigned>(std::cout, ".")
+    );
+    std::cout << unsigned(*bytes) << std::endl;
 }
 
 /// \brief Print an IP-address for container

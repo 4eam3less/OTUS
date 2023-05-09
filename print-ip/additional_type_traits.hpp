@@ -20,12 +20,8 @@ struct is_container<T,
 };
 
 
-template<typename T, typename ... Args>
+template<typename ... Args>
 struct is_one_type : std::true_type {
-};
-
-template<typename T>
-struct is_one_type<T> : std::true_type {
 };
 
 template<typename T, typename U, typename ...Args>
