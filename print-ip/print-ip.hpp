@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iterator>
 #include <iostream>
 #include <utility>
 #include <tuple>
@@ -35,9 +36,9 @@ void print_ip(const Integer &ip) {
     std::copy(
             std::make_reverse_iterator(end),
             std::make_reverse_iterator(bytes + 1),
-            std::ostream_iterator<unsigned int>(std::cout, ".")
+            std::ostream_iterator<unsigned>(std::cout, ".")
     );
-    std::cout << static_cast<unsigned int>(*bytes) << std::endl;
+    std::cout << static_cast<unsigned>(*bytes) << std::endl;
 }
 
 /// \brief Print an IP-address for container
