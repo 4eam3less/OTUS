@@ -3,7 +3,7 @@ set(TARGET_NAME allocator)
 set(HEADERS reserve-allocator.hpp
         simple-memory-manager.hpp
         pretty-function-info.hpp
-        List.hpp)
+        list.hpp)
 
 set(SOURCES main.cpp
         simple-memory-manager.cpp)
