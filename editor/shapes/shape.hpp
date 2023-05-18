@@ -18,6 +18,6 @@ public:
 
     virtual void resize(double coefficient) = 0;
 
-    //virtual std::vector<std::string> serialize() = 0;
+    virtual std::string serialize() = 0;
 
 };

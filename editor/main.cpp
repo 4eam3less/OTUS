@@ -1,26 +1,23 @@
 #include "controller.hpp"
-#include <memory>
 #include "circle.hpp"
 #include "rectangle.hpp"
 #include "view.hpp"
 
-template<typename T>
-void f(T) {
-}
-
 int main() {
 
     View view;
-    Circle c(Point{1, 1}, 5);
-    Rectangle r(Point{1, 1}, 5, 5);
+    Controller controller(view);
 
-    std::unique_ptr<Circle> c1;
-    std::unique_ptr<Rectangle> r1;
+    controller.push_shape(std::make_shared<Circle>(Point{10, 10}, 5.0));
+    controller.push_shape(std::make_shared<Circle>(Point{20, 10}, 8.0));
+    controller.repaint_shape(Color{128, 77, 225});
 
-    Controller con;
-    con.push_shape(std::make_shared<Circle>());
-    con.push_shape(std::make_shared<Rectangle>());
-    f(c);
-    f(r);
+    controller.push_shape(std::make_shared<Rectangle>());
+    if (!controller.capture_shape(Point{10, 10}))
+        throw std::runtime_error("shape not found");
+    controller.move_shape(Point{50, 85});
+    controller.resize_shape(2);
+    controller.repaint_shape(Color{50, 140, 255});
+
     return 0;
 }

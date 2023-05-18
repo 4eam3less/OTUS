@@ -30,6 +30,11 @@ public:
     void resize(double coefficient) override {
         width_ *= coefficient;
         height_ *= coefficient;
+        // calculate new coordinates
+    }
+
+    virtual std::string serialize() override {
+        return {};
     }
 
 private:

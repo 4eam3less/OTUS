@@ -2,7 +2,6 @@
 
 #include <deque>
 #include "shape.hpp"
-#include "memento.hpp"
 #include "observer.hpp"
 
 
@@ -25,13 +24,17 @@ public:
         }
     }
 
+    std::string serialize();
+
     void push_shape(std::shared_ptr<IShape> shape) {
         shapes_.push_back(shape);
         capture_shape_ = (--shapes_.end());
         notify();
     }
 
-    bool try_capture_shape(const Point &coordinates);
+    bool try_capture_shape(const Point &/*coordinates*/) {
+        return true;
+    }
 
     void move_shape(const Point &coordinates) {
         capture_shape_->get()->move(coordinates);

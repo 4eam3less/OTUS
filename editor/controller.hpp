@@ -3,10 +3,17 @@
 #include <string>
 #include "document.hpp"
 #include "observer.hpp"
-#include "memento.hpp"
+
+std::string load_file(const std::string &path);
+
+void save_to_file(const std::string &path, const std::string &name);
 
 class Controller {
 public:
+
+    Controller(IObserver &observer) {
+        document_.attach(&observer);
+    }
 
     void load(const std::string &path);
 

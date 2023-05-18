@@ -5,7 +5,7 @@
 
 class Circle : public IShape {
 public:
-    explicit Circle(const Point &coordinates = Point{}, size_t radius = 1,
+    explicit Circle(const Point &coordinates = Point{}, double radius = 1,
                     Color color = Color{}) : radius_(radius),
                                              coordinates_(coordinates),
                                              color_(color) {}
@@ -33,9 +33,12 @@ public:
 
     void resize(double coefficient) override {
         radius_ *= coefficient;
-        //
+        // calculate new coordinates
     }
 
+    virtual std::string serialize() override {
+        return {};
+    }
 
 private:
     double radius_;
