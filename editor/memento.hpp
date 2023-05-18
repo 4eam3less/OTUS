@@ -13,6 +13,6 @@ private:
     std::deque<std::shared_ptr<IShape>> shapes_;
 };
 
-void save(std::unique_ptr<Memento> snapshot, const std::string &path);
+void save(std::shared_ptr<Memento> snapshot, const std::string &path);
 
-std::unique_ptr<Memento> load(const std::string &path);
+std::shared_ptr<Memento> load(const std::string &path);

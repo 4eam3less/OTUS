@@ -4,14 +4,16 @@
 
 class IObserver {
 public:
-    virtual ~IObserver() {};
+    virtual ~IObserver() = default;
 
-    virtual void update() = 0;
+    virtual void update(std::shared_ptr<IShape> shape) = 0;
 };
 
 
 class ISubject {
 public:
+
+    virtual ~ISubject() = default;
 
     virtual void attach(IObserver *observer) = 0;
 
