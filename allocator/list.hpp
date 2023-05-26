@@ -67,14 +67,17 @@ class List {
 
 public:
 
-    List() : data_(nullptr), size_(0) {};
+    List() : head_(nullptr), size_(0) {};
 
-    explicit List(const T &value) : size_(1) {
-        data_ = create(value);
-        last_ = data_;
+    explicit List(const T &value) {
+        init(value);
     }
 
     void push_back(const T &value) {
+        if (!size_) [[unlikely]] {
+            init(value);
+            return;
+        }
         Node<T> *ptr = create(value);
         last_->next = ptr;
         ptr->prev = last_;
@@ -83,32 +86,54 @@ public:
     }
 
     void pop_back() {
+        if (size_ <= 1)
+            clear();
+
         auto ptr = last_;
         last_ = last_->prev;
+        last_->next = nullptr;
         remove(ptr, 1);
         --size_;
     }
 
+    void clear() {
+        while (head_) {
+            auto tmp = head_;
+            head_ = head_->next;
+            remove(tmp);
+        }
+        last_ = nullptr;
+        size_ = 0;
+    }
+
     void push_front(const T &value) {
+        if (!size_) [[unlikely]] {
+            init(value);
+            return;
+        }
         Node<T> *ptr = create(value);
-        auto tmp = data_;
+        auto tmp = head_;
         tmp->prev = ptr;
-        data_ = ptr;
-        data_->next = tmp;
+        head_ = ptr;
+        head_->next = tmp;
         ++size_;
     }
 
     void pop_front() {
-        auto ptr = data_;
-        data_ = data_->next;
-        data_->prev = nullptr;
+        if (size_ <= 1)
+            clear();
 
-        remove(ptr, 1);
+        auto ptr = head_;
+        head_ = head_->next;
+        head_->prev = nullptr;
+        remove(ptr);
         --size_;
     }
 
     template<class ListIterator>
     Iterator<Node<T>> insert(ListIterator &it, const T &value) {
+        if (it == this->end())
+            throw std::runtime_error("Incorrect iterator");
         Node<T> *new_node = create(value);
 
         auto old = it.pos_->next;
@@ -123,11 +148,13 @@ public:
 
     template<class ListIterator>
     Iterator<Node<T>> erase(ListIterator &it) {
+        if (it == this->end())
+            throw std::runtime_error("Incorrect iterator");
         it.pos_->next->prev = it.pos_->prev;
         it.pos_->prev->next = it.pos_->next;
         Iterator<Node<T>> res(it.pos_->next);
 
-        remove(it.pos_, 1);
+        remove(it.pos_);
         --size_;
         return res;
     }
@@ -141,7 +168,7 @@ public:
     }
 
     iterator begin() noexcept {
-        return iterator(data_);
+        return iterator(head_);
     }
 
     iterator end() noexcept {
@@ -149,7 +176,7 @@ public:
     }
 
     const_iterator cbegin() const noexcept {
-        return const_iterator(data_);
+        return const_iterator(head_);
     }
 
     const_iterator cend() const noexcept {
@@ -169,13 +196,19 @@ private:
         return ptr;
     }
 
-    void remove(Node<T> *ptr, size_t size) {
+    void remove(Node<T> *ptr, size_t size = 1) {
         allocator_.destroy(ptr);
         allocator_.deallocate(ptr, size);
     }
 
+    void init(const T &value) {
+        head_ = create(value);
+        last_ = head_;
+        size_ = 1;
+    }
+
     Allocator allocator_;
-    Node<T> *data_;
+    Node<T> *head_;
     Node<T> *last_;
-    size_t size_;
+    size_t size_ = 0;
 };
