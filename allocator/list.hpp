@@ -79,19 +79,18 @@ public:
             return;
         }
         Node<T> *ptr = create(value);
-        last_->next = ptr;
-        ptr->prev = last_;
-        last_ = last_->next;
+        tail_->next = ptr;
+        ptr->prev = tail_;
+        tail_ = tail_->next;
         ++size_;
     }
 
     void pop_back() {
         if (size_ <= 1)
             clear();
-
-        auto ptr = last_;
-        last_ = last_->prev;
-        last_->next = nullptr;
+        auto ptr = tail_;
+        tail_ = tail_->prev;
+        tail_->next = nullptr;
         remove(ptr, 1);
         --size_;
     }
@@ -102,7 +101,7 @@ public:
             head_ = head_->next;
             remove(tmp);
         }
-        last_ = nullptr;
+        tail_ = nullptr;
         size_ = 0;
     }
 
@@ -122,7 +121,6 @@ public:
     void pop_front() {
         if (size_ <= 1)
             clear();
-
         auto ptr = head_;
         head_ = head_->next;
         head_->prev = nullptr;
@@ -203,12 +201,12 @@ private:
 
     void init(const T &value) {
         head_ = create(value);
-        last_ = head_;
+        tail_ = head_;
         size_ = 1;
     }
 
     Allocator allocator_;
     Node<T> *head_;
-    Node<T> *last_;
+    Node<T> *tail_;
     size_t size_ = 0;
 };
