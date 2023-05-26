@@ -1,7 +1,6 @@
 #pragma once
 
 #include "reserve-allocator.hpp"
-#include <vector>
 
 template<typename U>
 struct Node {
