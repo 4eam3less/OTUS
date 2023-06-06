@@ -1,6 +1,7 @@
 #pragma once
 
 #include "reserve-allocator.hpp"
+#include <stdexcept>
 
 template<typename U>
 struct Node {
@@ -24,7 +25,7 @@ class List {
 
         Iterator(const Iterator<U> &other) = default;
 
-        Iterator(const Iterator<U> &&other) noexcept = default;
+        Iterator(Iterator<U> &&other) noexcept = default;
 
         ~Iterator() = default;
 
