@@ -85,8 +85,10 @@ public:
     }
 
     void pop_back() {
-        if (size_ <= 1)
+        if (size_ <= 1) {
             clear();
+            return;
+        }
         auto ptr = tail_;
         tail_ = tail_->prev;
         tail_->next = nullptr;
@@ -118,8 +120,10 @@ public:
     }
 
     void pop_front() {
-        if (size_ <= 1)
+        if (size_ <= 1) {
             clear();
+            return;
+        }
         auto ptr = head_;
         head_ = head_->next;
         head_->prev = nullptr;
