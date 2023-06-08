@@ -12,7 +12,7 @@ public:
 
     ReserveAllocator(const ReserveAllocator &other) = delete;
 
-    ReserveAllocator(const ReserveAllocator &&other) = delete;
+    ReserveAllocator(ReserveAllocator &&other) = delete;
 
     ~ReserveAllocator() = default;
 

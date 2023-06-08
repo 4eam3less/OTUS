@@ -2,6 +2,7 @@
 
 #include "reserve-allocator.hpp"
 #include <stdexcept>
+#include <memory>
 
 template<typename U>
 struct Node {
@@ -71,6 +72,10 @@ public:
 
     explicit List(const T &value) {
         init(value);
+    }
+
+    ~List() {
+        clear();
     }
 
     void push_back(const T &value) {
