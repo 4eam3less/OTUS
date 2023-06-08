@@ -24,41 +24,41 @@ class List {
 
         explicit Iterator(U *begin) : pos_(begin) {}
 
-        Iterator(const Iterator<U> &other) = default;
+        Iterator(const Iterator<U> &other) noexcept = default;
 
         Iterator(Iterator<U> &&other) noexcept = default;
 
         ~Iterator() = default;
 
-        Iterator &operator++() {
+        Iterator &operator++() noexcept {
             pos_ = pos_->next;
             return *this;
         }
 
-        Iterator &operator--() {
+        Iterator &operator--() noexcept {
             pos_ = pos_->prev();
             return *this;
         }
 
-        Iterator operator++(int) &{
+        Iterator operator++(int) & noexcept {
             Iterator tmp(*this);
             ++(*this);
             return tmp;
         }
 
-        Iterator operator--(int) &{
+        Iterator operator--(int) & noexcept {
             Iterator tmp(*this);
             --(*this);
             return tmp;
         }
 
-        bool operator!=(const Iterator<U> &it) const { return pos_ != it.pos_; }
+        bool operator!=(const Iterator<U> &it) const noexcept { return pos_ != it.pos_; }
 
-        bool operator==(const Iterator<U> &it) const { return pos_ == it.pos_; }
+        bool operator==(const Iterator<U> &it) const noexcept { return pos_ == it.pos_; }
 
-        U &operator*() const { return *pos_; }
+        U &operator*() const noexcept { return *pos_; }
 
-        U *operator->() const { return pos_; }
+        U *operator->() const noexcept { return pos_; }
 
     private:
         U *pos_;
@@ -207,12 +207,20 @@ private:
     template<typename ... Args>
     Node<T> *create(Args &&...args) {
         auto ptr = allocator_.allocate(1);
+#if _LIBCPP_STD_VER <= 17
         allocator_.construct(ptr, std::forward<Args>(args)...);
+#else
+        std::allocator_traits<Allocator>::construct(allocator_, ptr, std::forward<Args>(args)...);
+#endif
         return ptr;
     }
 
     void remove(Node<T> *ptr, size_t size = 1) {
+#if _LIBCPP_STD_VER <= 17
         allocator_.destroy(ptr);
+#else
+        std::allocator_traits<Allocator>::destroy(allocator_, ptr);
+#endif
         allocator_.deallocate(ptr, size);
     }
 
