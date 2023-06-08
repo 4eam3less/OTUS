@@ -207,19 +207,19 @@ private:
     template<typename ... Args>
     Node<T> *create(Args &&...args) {
         auto ptr = allocator_.allocate(1);
-#if _LIBCPP_STD_VER <= 17
-        allocator_.construct(ptr, std::forward<Args>(args)...);
-#else
+#if __cplusplus >= 202002L
         std::allocator_traits<Allocator>::construct(allocator_, ptr, std::forward<Args>(args)...);
+#else
+        allocator_.construct(ptr, std::forward<Args>(args)...);
 #endif
         return ptr;
     }
 
     void remove(Node<T> *ptr, size_t size = 1) {
-#if _LIBCPP_STD_VER <= 17
-        allocator_.destroy(ptr);
-#else
+#if __cplusplus >= 202002L
         std::allocator_traits<Allocator>::destroy(allocator_, ptr);
+#else
+        allocator_.destroy(ptr);
 #endif
         allocator_.deallocate(ptr, size);
     }
