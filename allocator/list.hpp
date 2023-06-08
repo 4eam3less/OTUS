@@ -56,7 +56,9 @@ class List {
 
         bool operator==(const Iterator<U> &it) const { return pos_ == it.pos_; }
 
-        T &operator*() const { return pos_->data; }
+        U &operator*() const { return *pos_; }
+
+        U *operator->() const { return pos_; }
 
     private:
         U *pos_;
@@ -72,6 +74,12 @@ public:
 
     explicit List(const T &value) {
         init(value);
+    }
+
+    List(List &other) {
+        for (auto it = other.begin(); it != other.end(); ++it) {
+            push_back(it->data);
+        }
     }
 
     ~List() {
