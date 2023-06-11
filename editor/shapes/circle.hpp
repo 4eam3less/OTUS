@@ -36,9 +36,11 @@ public:
         // calculate new coordinates
     }
 
-    virtual std::string serialize() override {
+    std::string serialize() override {
         return {};
     }
+
+    void deserialize(const std::string &) override {}
 
 private:
     double radius_;

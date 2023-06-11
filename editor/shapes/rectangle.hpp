@@ -37,6 +37,8 @@ public:
         return {};
     }
 
+    void deserialize(const std::string &) override {}
+
 private:
     Point coordinates_;
     size_t width_;

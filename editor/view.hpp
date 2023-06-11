@@ -9,9 +9,11 @@ public:
         redraw(shape);
     }
 
-    void redraw(std::shared_ptr<IShape>) {
-
+    void redraw(std::shared_ptr<IShape> shape) {
+        rendering(shape->lines(), shape->get_color());
     }
 
 private:
+    void rendering(const std::vector<Line> &/*lines*/, const Color &/*color*/) {}
+
 };
