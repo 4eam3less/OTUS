@@ -2,8 +2,8 @@
 
 #include "shape.hpp"
 #include "observer.hpp"
+#include <list>
 #include <deque>
-#include <string>
 
 inline std::string load_file(const std::string &path);
 
