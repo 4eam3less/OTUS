@@ -9,7 +9,7 @@ size_t factorial(unsigned int n) {
 }
 
 int main() {
-
+    
     std::map<int, int> a;
     std::map<int, int, std::less<>, ReserveAllocator<std::pair<const int, int>, 10>> b;
     List<int, std::allocator<Node<int>>> standard_list;
